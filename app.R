@@ -13,24 +13,32 @@ library(igraph)
 library(scales)
 library(lubridate)
 library(reshape2)
+library(stringr)
 
 
 # Define User Interface for the application 
 ui <- fluidPage( #fluidPage 
 
     # Application title
-    titlePanel("Sanjay's shiny app"),
+    titlePanel("BIOL1082L Data Science Week 2"),
 
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
             
         sidebarPanel(
                 
-                fileInput("file1", "Choose CSV File",
-                          multiple = TRUE,
+                fileInput("file1", "Upload RFID data",
+                          multiple = FALSE,
                           accept = c("text/csv",
                                      "text/comma-separated-values,text/plain",
                                      ".csv")),
+                
+                fileInput("file2", "Upload penguin names",
+                          multiple = FALSE,
+                          accept = c("text/csv",
+                                     "text/comma-separated-values,text/plain",
+                                     ".csv")),
+                
                 # Horizontal line ----
                 tags$hr(),
                 
@@ -46,7 +54,7 @@ ui <- fluidPage( #fluidPage
                  sliderInput("timewind",
                          "Time window (seconds)",
                          min = 0,
-                         max = 50,
+                         max = 60,
                          value = 0),
                 
                 #actionButton("netbutton", "Submit", class = "btn-success")
@@ -55,7 +63,9 @@ ui <- fluidPage( #fluidPage
                           "Time windows to compare",
                           placeholder = "Enter numbers separated by commas"),
                 
-                downloadButton("downloadData", "Download")
+                downloadButton("downloadData", "Download data"),
+                
+                #downloadButton("downloadPlot", "Download plot") #downloading the plot is not working
         ),
 
         # Show a plot of the generated distribution
@@ -84,17 +94,40 @@ ui <- fluidPage( #fluidPage
 
 # Define server logic (this is where you define the relationship between inputs and outputs)
 server <- function(input, output) {
+        
+        mrgdf <- reactive ({
+                
+                # input$file1 will be NULL initially. 
+                req(input$file1)
+                req(input$file2)
+                
+                #decided to make two separate file input boxes, but this may have worked
+                # upload = list()
+                # 
+                # for(i in 1:length(input$file1[, 1])){
+                #         upload[[i]] <- read.csv(file = input$file1[[i, 'datapath']])
+                # }
+                
+                rfiddata =  read.csv(file = input$file1$datapath)#upload[[1]]
+                pnames =  read.csv(file = input$file2$datapath)#upload[[2]]
+                
+                merge(rfiddata, pnames, by = "tagID", all.x = TRUE)
+                
+        })
 
         
         output$headdata <- renderTable({
                 
-                # input$file1 will be NULL initially. After the user selects
+                #After the user selects
                 # and uploads a file, head of that data file by default,
                 # or all rows if selected, will be shown.
                 
                 req(input$file1)
+                req(input$file2)
                 
-                df <- read.csv(input$file1$datapath)#,
+                df = mrgdf()
+                df = df[order(df$datetime),]
+                #df <- read.csv(input$file1$datapath)#,
                                # header = input$header,
                                # sep = input$sep,
                                # quote = input$quote)
@@ -107,8 +140,11 @@ server <- function(input, output) {
         
         output$strdata <- renderPrint({
                 req(input$file1)
+                req(input$file2)
                 
-                df <- read.csv(input$file1$datapath)#,
+                df = mrgdf()
+                df = df[order(df$datetime),]
+                #df <- read.csv(input$file1$datapath)#,
                 # header = input$header,
                 # sep = input$sep,
                 # quote = input$quote)
@@ -120,18 +156,19 @@ server <- function(input, output) {
         
         
         
-        output$netplot <- renderPlot({
+        netplotreactive <- reactive({
                 
-                if (input$timewind != 0) { #need this if statement to make sure a plot only shows up if slider is not on zero
-                #input$netbutton #this adds dependency on the action button (button needs to be clicked before this code is run again)
+                
                 
                 req(input$file1)
+                req(input$file2)
                 
-                df <- readr::read_csv(input$file1$datapath)
+                df = mrgdf()
+                #df <- readr::read_csv(input$file1$datapath)
                 
-                df$hour <- lubridate::hour(df$Time)
-                df$minute <- lubridate::minute(df$Time)
-                df$second <- lubridate::second(df$Time)
+                df$hour <- lubridate::hour(df$datetime)
+                df$minute <- lubridate::minute(df$datetime)
+                df$second <- lubridate::second(df$datetime)
                 
                 # custom rounding function
                 mround <- function(x,base){
@@ -145,27 +182,28 @@ server <- function(input, output) {
                 df$time.round <- sprintf("%02d", df$time.round)
                 
                 # add a key with hour, minute, second, and antennaID
-                df$groupKEY <- paste(df$Date,
-                                                   paste(df$hour, 
-                                                         df$minute, 
-                                                         df$time.round, 
-                                                         sep=":"),
-                                                   df$Antenna, 
+                dateforkey = gsub(" .*$", "", as.character(df$datetime))
+                df$groupKEY <- paste(dateforkey,
+                                                paste(df$hour, 
+                                                        df$minute, 
+                                                        df$time.round, 
+                                                        sep=":"),
+                                                   df$antennaID, 
                                                    sep="_")
                 
                 #count the number of times each individual is at each antenna at each time using the groupKey, then add whether each individual is "present"
                 ct.penguinXkey <- df %>% 
-                        group_by(Penguin, groupKEY) %>% 
+                        group_by(penguin, groupKEY) %>% 
                         summarize(count.pings=n())
                 
                 # add a column that is just "present" (1) at each time interval at each antenna
                 ct.penguinXkey$present <- 1
                 
-                presence.penguinXkey <- unique(ct.penguinXkey[c("Penguin", "groupKEY", "present")])
+                presence.penguinXkey <- unique(ct.penguinXkey[c("penguin", "groupKEY", "present")])
                 
                 
                 # Reshape the data into individual X group format
-                indivXgrp <- reshape2::dcast(presence.penguinXkey, Penguin~groupKEY)
+                indivXgrp <- reshape2::dcast(presence.penguinXkey, penguin~groupKEY)
                 
                 # convert to matrix format using matrix.please function
                 matrix.please <- function(x) {
@@ -203,10 +241,13 @@ server <- function(input, output) {
                 )
                 # add title
                 title("Penguin Game: association = present at the same antenna in the same time window", cex.main=0.75)
-                }        
+                        
         })
         
-        
+        output$netplot <- renderPlot({
+                if (input$timewind != 0) {netplotreactive()}#need this if statement to make sure a plot only shows up if slider is not on zero
+                        #input$netbutton #this adds dependency on the action button (button needs to be clicked before this code is run again)
+        })
         
         net.summary.data <- reactive({
                 
@@ -221,12 +262,14 @@ server <- function(input, output) {
                                           strength = numeric())
                 
                 req(input$file1)
+                req(input$file2)
                 
-                df <- readr::read_csv(input$file1$datapath)
+                df = mrgdf()
+                #df <- readr::read_csv(input$file1$datapath)
                 
-                df$hour <- lubridate::hour(df$Time)
-                df$minute <- lubridate::minute(df$Time)
-                df$second <- lubridate::second(df$Time)
+                df$hour <- lubridate::hour(df$datetime)
+                df$minute <- lubridate::minute(df$datetime)
+                df$second <- lubridate::second(df$datetime)
                 
                 mround <- function(x,base){
                         base*round(x/base)
@@ -252,30 +295,31 @@ server <- function(input, output) {
                         loop.data$sec.rounded <- sprintf("%02d", loop.data$sec.rounded)
                         
                         # add a key with hour, minute, second, and antennaID
-                        loop.data$groupKEY <- paste(loop.data$Date,
+                        loopdateforkey = gsub(" .*$", "", as.character(loop.data$datetime))
+                        loop.data$groupKEY <- paste(loopdateforkey,
                                                     paste(loop.data$hour, 
                                                           loop.data$minute, 
                                                           loop.data$sec.rounded, 
                                                           sep=":"),
-                                                    loop.data$Antenna, 
+                                                    loop.data$antennaID, 
                                                     sep="_")
                         
                         # summarize
                         ct.penguinXkey <- loop.data %>% 
-                                group_by(Penguin, groupKEY) %>% 
+                                group_by(penguin, groupKEY) %>% 
                                 summarize(count.pings=n())
                         
                         # add a column that is just "present" (1) at each time interval at each antenna
                         ct.penguinXkey$present <- 1
                         
                         # extract all unique rows
-                        presence.penguinXkey <- unique(ct.penguinXkey[c("Penguin", "groupKEY", "present")])
+                        presence.penguinXkey <- unique(ct.penguinXkey[c("penguin", "groupKEY", "present")])
                         
                         #check
                         #head(presence.penguinXkey)
                         
                         #make penguin by group dataframe then convert to a matrix
-                        indivXgrp <- reshape2::dcast(presence.penguinXkey, Penguin~groupKEY)
+                        indivXgrp <- reshape2::dcast(presence.penguinXkey, penguin~groupKEY)
                         indivXgrp.mx <- matrix.please(indivXgrp) # make into matrix
                         indivXgrp.mx[is.na(indivXgrp.mx)] <- 0  # set any NA cells to 0
                         
@@ -324,13 +368,21 @@ server <- function(input, output) {
         
         # Downloadable csv of data ----
         output$downloadData <- downloadHandler(
-                filename = function() {
-                        paste("net_summary", ".csv", sep = "")
-                },
+                filename = "net_summary.csv",
                 content = function(file) {
                         write.csv(net.summary.data(), file, row.names = FALSE)
                 }
         )
+         
+ #        output$downloadPlot <- downloadHandler(
+ #                filename = "netplot.png",
+ #                content = function(file) {
+ #                        ggsave(file, plot = netplotreactive(), device = "png", width = 10, height = 10)
+ #                        #png(file)
+ #                        #print(netplotreactive())
+ #                        #dev.off()
+ #                }
+ #        )
 }
 
 # Run the application 
