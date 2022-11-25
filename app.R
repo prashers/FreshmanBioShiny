@@ -66,6 +66,11 @@ ui <- fluidPage( #fluidPage
                 downloadButton("downloadData", "Download data"),
                 
                 #downloadButton("downloadPlot", "Download plot") #downloading the plot is not working
+                
+                # Horizontal line ----
+                tags$hr(),
+                
+                helpText("","App created by Sanjay Prasher 2022, Hobson lab")
         ),
 
         # Show a plot of the generated distribution
