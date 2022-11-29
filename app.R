@@ -171,6 +171,11 @@ server <- function(input, output) {
                 df = mrgdf()
                 #df <- readr::read_csv(input$file1$datapath)
                 
+                if(length(grep("T",df$datetime)) > 0 | length(grep("Z",df$datetime)) > 0){
+                        df$datetime = gsub("T", " ", df$datetime)
+                        df$datetime = gsub("Z", "", df$datetime)
+                }
+                
                 df$hour <- lubridate::hour(df$datetime)
                 df$minute <- lubridate::minute(df$datetime)
                 df$second <- lubridate::second(df$datetime)
@@ -237,7 +242,7 @@ server <- function(input, output) {
                      
                      #format edges
                      edge.color=alpha("black", 0.5), #edge color
-                     edge.width=E(game.net)$weight*2, #width of edges
+                     edge.width=E(game.net)$weight,#*2, #width of edges
                      
                      #format labels
                      vertex.label.cex=1, #font size of labels
@@ -271,6 +276,11 @@ server <- function(input, output) {
                 
                 df = mrgdf()
                 #df <- readr::read_csv(input$file1$datapath)
+                
+                if(length(grep("T",df$datetime)) > 0 | length(grep("Z",df$datetime)) > 0){
+                        df$datetime = gsub("T", " ", df$datetime)
+                        df$datetime = gsub("Z", "", df$datetime)
+                }
                 
                 df$hour <- lubridate::hour(df$datetime)
                 df$minute <- lubridate::minute(df$datetime)
