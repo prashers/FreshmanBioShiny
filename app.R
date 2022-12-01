@@ -131,6 +131,7 @@ server <- function(input, output) {
                 req(input$file2)
                 
                 df = mrgdf()
+                df = df[complete.cases(df),]
                 df = df[order(df$datetime),]
                 #df <- read.csv(input$file1$datapath)#,
                                # header = input$header,
@@ -148,6 +149,7 @@ server <- function(input, output) {
                 req(input$file2)
                 
                 df = mrgdf()
+                df = df[complete.cases(df),]
                 df = df[order(df$datetime),]
                 #df <- read.csv(input$file1$datapath)#,
                 # header = input$header,
@@ -169,6 +171,7 @@ server <- function(input, output) {
                 req(input$file2)
                 
                 df = mrgdf()
+                df = df[complete.cases(df),]
                 #df <- readr::read_csv(input$file1$datapath)
                 
                 if(length(grep("T",df$datetime)) > 0 | length(grep("Z",df$datetime)) > 0){
@@ -275,6 +278,7 @@ server <- function(input, output) {
                 req(input$file2)
                 
                 df = mrgdf()
+                df = df[complete.cases(df),]
                 #df <- readr::read_csv(input$file1$datapath)
                 
                 if(length(grep("T",df$datetime)) > 0 | length(grep("Z",df$datetime)) > 0){
