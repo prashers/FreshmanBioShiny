@@ -15,6 +15,7 @@ library(lubridate)
 library(reshape2)
 library(stringr)
 
+options(dplyr.summarise.inform = FALSE) # this prevents unnecessary messages from dplyr summarize function 
 
 # Define User Interface for the application 
 ui <- fluidPage( #fluidPage 
@@ -216,7 +217,7 @@ server <- function(input, output) {
                 
                 
                 # Reshape the data into individual X group format
-                indivXgrp <- reshape2::dcast(presence.penguinXkey, penguin~groupKEY)
+                indivXgrp <- reshape2::dcast(presence.penguinXkey, penguin~groupKEY, value.var = "present")
                 
                 # convert to matrix format using matrix.please function
                 matrix.please <- function(x) {
@@ -338,7 +339,7 @@ server <- function(input, output) {
                         #head(presence.penguinXkey)
                         
                         #make penguin by group dataframe then convert to a matrix
-                        indivXgrp <- reshape2::dcast(presence.penguinXkey, penguin~groupKEY)
+                        indivXgrp <- reshape2::dcast(presence.penguinXkey, penguin~groupKEY, value.var = "present")
                         indivXgrp.mx <- matrix.please(indivXgrp) # make into matrix
                         indivXgrp.mx[is.na(indivXgrp.mx)] <- 0  # set any NA cells to 0
                         
