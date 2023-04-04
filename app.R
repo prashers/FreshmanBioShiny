@@ -28,13 +28,13 @@ ui <- fluidPage( #fluidPage
             
         sidebarPanel(
                 
-                fileInput("file1", "Upload RFID data",
+                fileInput("file1", "1. Upload RFID data",
                           multiple = FALSE,
                           accept = c("text/csv",
                                      "text/comma-separated-values,text/plain",
                                      ".csv")),
                 
-                fileInput("file2", "Upload penguin names",
+                fileInput("file2", "2. Upload penguin names",
                           multiple = FALSE,
                           accept = c("text/csv",
                                      "text/comma-separated-values,text/plain",
@@ -44,7 +44,7 @@ ui <- fluidPage( #fluidPage
                 tags$hr(),
                 
                 # Input: Select number of rows to display ----
-                radioButtons("disp", "Display data",
+                radioButtons("disp", "3. Display data",
                              choices = c(Head = "head",
                                          Structure = "str"),
                              selected = "head"),
@@ -53,7 +53,7 @@ ui <- fluidPage( #fluidPage
                 tags$hr(),
                 
                  sliderInput("timewind",
-                         "Time window (seconds)",
+                         "4. Time window (seconds)",
                          min = 0,
                          max = 60,
                          value = 0),
@@ -61,10 +61,10 @@ ui <- fluidPage( #fluidPage
                 #actionButton("netbutton", "Submit", class = "btn-success")
                 
                 textInput("timecomp",
-                          "Time windows to compare",
+                          "5. Time windows to compare",
                           placeholder = "Enter numbers separated by commas"),
                 
-                downloadButton("downloadData", "Download data"),
+                downloadButton("downloadData", " 6. Download data"),
                 
                 #downloadButton("downloadPlot", "Download plot") #downloading the plot is not working
                 
@@ -237,8 +237,11 @@ server <- function(input, output) {
                 game.net <- igraph::graph_from_adjacency_matrix(penguinXpenguin, "undirected", weighted=TRUE, diag=FALSE)
                 
                 # plot
+                if(nrow(df) > 2000) { #added ifelse statement to make real penguin networks easier to see in plot
                 set.seed(42)
+                
                 plot(game.net,
+                     layout=layout_in_circle,
                      
                      #format nodes
                      vertex.color="lightblue", #node fill color
@@ -246,13 +249,33 @@ server <- function(input, output) {
                      
                      #format edges
                      edge.color=alpha("black", 0.5), #edge color
-                     edge.width=E(game.net)$weight,#*2, #width of edges
+                     edge.width=sqrt(E(game.net)$weight),#width of edges, scaled down for visibility
                      
                      #format labels
                      vertex.label.cex=1, #font size of labels
-                     vertex.label.color="black", #font color
+                     vertex.label.color="orange", #font color
                      vertex.label.dist=2.5, #moves label away from node center
                 )
+                } else {
+                        set.seed(42)
+                        
+                        plot(game.net,
+                             layout=layout_in_circle,
+                             
+                             #format nodes
+                             vertex.color="lightblue", #node fill color
+                             vertex.frame.color="white", #node outline color
+                             
+                             #format edges
+                             edge.color=alpha("black", 0.5), #edge color
+                             edge.width=E(game.net)$weight,#*2, #width of edges
+                             
+                             #format labels
+                             vertex.label.cex=1, #font size of labels
+                             vertex.label.color="orange", #font color
+                             vertex.label.dist=2.5, #moves label away from node center
+                        )        
+                }
                 # add title
                 title("Penguin Game: association = present at the same antenna in the same time window", cex.main=0.75)
                         
