@@ -2,7 +2,7 @@
 
 **Interactive Data Analysis Tool for Understanding Group Behavior Patterns**
 
-**Project Overview:** Developed an interactive R Shiny web application to analyze social behavior patterns from RFID tracking data, enabling users to explore complex network relationships without requiring advanced coding skills. Access the app here: https://prashers.shinyapps.io/datascishinyapp/ 
+**Project Overview:** Developed an interactive R Shiny web application to analyze social behavior patterns from RFID tracking data, enabling users to explore complex network relationships without requiring advanced coding skills. Try the app (https://prashers.shinyapps.io/datascishinyapp/) using the practice datasets found in this GitHub repository. 
 
 **Business Problem Solved:** Traditional data analysis methods for understanding group interactions and space utilization were too complex for end users. This tool democratizes access to sophisticated social network analysis, allowing stakeholders to quickly derive actionable insights from location-tracking data.
 
@@ -13,7 +13,7 @@
 - Quantitative Metrics: Automated calculation of network statistics (degree, strength) for each individual
 - Export Functionality: CSV download capability for further analysis and reporting
 
-**Technical Implementation:** Built using R Shiny framework with reactive programming for real-time data exploration. Handles large-scale temporal datasets and computes complex network metrics on-demand.
+**Technical Implementation:** Built using R Shiny framework with reactive programming for real-time data exploration. Handles temporal datasets and computes network metrics on-demand.
 
 **Impact:** Enables non-technical users to perform sophisticated behavioral analysis, reducing time-to-insight from hours of coding to minutes of interactive exploration. The tool's flexibility makes it applicable to various use cases involving location-based interaction data. It currently **serves 950+ users annually**.
 
