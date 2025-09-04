@@ -9,7 +9,7 @@
 **Key Features:**
 - Data Integration: Automated merging of RFID detection data with individual identifiers
 - Interactive Visualization: Dynamic social network diagrams showing relationship strength and frequency
-- Customizable Parameters: Time-window slider allowing users to adjust association criteria based on business needs
+- Customizable Parameters: Time-window slider allowing users to adjust association criteria
 - Quantitative Metrics: Automated calculation of network statistics (degree, strength) for each individual
 - Export Functionality: CSV download capability for further analysis and reporting
 
