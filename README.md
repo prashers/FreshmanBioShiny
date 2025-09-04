@@ -1,26 +1,26 @@
 # FreshmanBioShiny
 
-Interactive Data Analysis Tool for Understanding Group Behavior Patterns
+**Interactive Data Analysis Tool for Understanding Group Behavior Patterns**
 
-Project Overview: Developed an interactive R Shiny web application to analyze social behavior patterns from RFID tracking data, enabling users to explore complex network relationships without requiring advanced coding skills.
+**Project Overview:** Developed an interactive R Shiny web application to analyze social behavior patterns from RFID tracking data, enabling users to explore complex network relationships without requiring advanced coding skills. Access the app here: https://prashers.shinyapps.io/datascishinyapp/ 
 
-Business Problem Solved: Traditional data analysis methods for understanding group interactions and space utilization were too complex for end users. This tool democratizes access to sophisticated social network analysis, allowing stakeholders to quickly derive actionable insights from location-tracking data.
+**Business Problem Solved:** Traditional data analysis methods for understanding group interactions and space utilization were too complex for end users. This tool democratizes access to sophisticated social network analysis, allowing stakeholders to quickly derive actionable insights from location-tracking data.
 
-Key Features:
+**Key Features:**
 - Data Integration: Automated merging of RFID detection data with individual identifiers
 - Interactive Visualization: Dynamic social network diagrams showing relationship strength and frequency
 - Customizable Parameters: Time-window slider allowing users to adjust association criteria based on business needs
 - Quantitative Metrics: Automated calculation of network statistics (degree, strength) for each individual
 - Export Functionality: CSV download capability for further analysis and reporting
 
-Technical Implementation: Built using R Shiny framework with reactive programming for real-time data exploration. Handles large-scale temporal datasets and computes complex network metrics on-demand.
+**Technical Implementation:** Built using R Shiny framework with reactive programming for real-time data exploration. Handles large-scale temporal datasets and computes complex network metrics on-demand.
 
-Impact: Enables non-technical users to perform sophisticated behavioral analysis, reducing time-to-insight from hours of coding to minutes of interactive exploration. The tool's flexibility makes it applicable to various use cases involving location-based interaction data. It currently serves 950+ users annually.
+**Impact:** Enables non-technical users to perform sophisticated behavioral analysis, reducing time-to-insight from hours of coding to minutes of interactive exploration. The tool's flexibility makes it applicable to various use cases involving location-based interaction data. It currently **serves 950+ users annually**.
 
-Skills Demonstrated: R Programming, Shiny Web Development, Data Visualization, Network Analysis, User Experience Design, Interactive Dashboard Development
+**Skills Demonstrated:** R Programming, Shiny Web Development, Data Visualization, Network Analysis, User Experience Design, Interactive Dashboard Development
 
 
-For educators:
+**Summary for educators:**
 This Shiny app was developed for an introductory biology lab course (BIOL1082L) at the University of Cincinnati to help students analyze and visualize penguin social networks using real RFID detection data. The app supports a newly introduced data science module that familiarizes students with R-based data analysis (app first developed in Fall 2022).
 
 Students participate in interactive lab activities where they simulate penguin movements and generate RFID detection data. They then use the app to explore both their class-generated dataset and real penguin data from the Cincinnati Zoo. The app allows students to:
