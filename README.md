@@ -4,8 +4,6 @@
 
 **Project Overview:** Developed an interactive R Shiny web application to analyze social behavior patterns from RFID tracking data, enabling users to explore complex network relationships without requiring advanced coding skills. Try the app (https://prashers.shinyapps.io/datascishinyapp/) using the practice datasets found in this GitHub repository. 
 
-<video src="FreshmanBioShiny/Shiny app demo.mp4" controls></video>
-
 **Business Problem Solved:** Traditional data analysis methods for understanding group interactions and space utilization were too complex for end users. This tool democratizes access to sophisticated social network analysis, allowing stakeholders to quickly derive actionable insights from location-tracking data.
 
 **Key Features:**
@@ -20,6 +18,9 @@
 **Impact:** Enables non-technical users to perform sophisticated behavioral analysis, reducing time-to-insight from hours of coding to minutes of interactive exploration. The tool's flexibility makes it applicable to various use cases involving location-based interaction data. It currently **serves 950+ users annually**.
 
 **Skills Demonstrated:** R Programming, Shiny Web Development, Data Visualization, Network Analysis, User Experience Design, Interactive Dashboard Development
+
+
+https://github.com/user-attachments/assets/1061ac27-e2df-475b-baf6-e00cf191425e
 
 
 **Summary for educators:**
